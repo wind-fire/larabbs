@@ -31,8 +31,16 @@ class TopicsController extends Controller
         return view('topics.index', compact('topics'));
     }
 
-    public function show(Topic $topic)
+    public function show(Request $request,Topic $topic)
     {
+
+        // URL 矫正
+
+        /*当话题有 Slug 的时候，我们希望用户一直使用正确的、带着 Slug 的链接来访问。
+        我们可以在控制器中对 Slug 进行判断，当条件允许的时候，我们将发送 301 永久重定向指令给浏览器，跳转到带 Slug 的链接：*/
+        if ( ! empty($topic->slug) && $topic->slug != $request->slug) {
+            return redirect($topic->link(), 301);
+        }
 
         /*注意此处使用 Laravel 的 『隐性路由模型绑定』 功能，
         当请求 http://larabbs.test/topics/1 时，$topic 变量会自动解析为 ID 为 1 的帖子对象。*/
@@ -48,7 +56,7 @@ class TopicsController extends Controller
 	/*public function store(TopicRequest $request)
 	{
 		$topic = Topic::create($request->all());
-		return redirect()->route('topics.show', $topic->id)->with('message', 'Created successfully.');
+		return redirect()->to($topic->link())->with('message', 'Created successfully.');
 	}*/
     public function store(TopicRequest $request, Topic $topic)
     {
@@ -56,14 +64,15 @@ class TopicsController extends Controller
         $topic->user_id = Auth::id();
         $topic->save();
 
-        return redirect()->route('topics.show', $topic->id)->with('success', '成功创建话题。');
+//        return redirect()->to($topic->link())->with('success', '成功创建话题。');
+        return redirect()->to($topic->link())->with('success', '成功创建话题！');
     }
 
 	public function edit(Topic $topic)
 	{
         $this->authorize('update', $topic);
         $categories = Category::all();
-		return view('topics.create_and_edit', compact('topic','categories'));
+		return view('topics.create_and_edit', compact('topic','ca'));
 	}
 
 	public function update(TopicRequest $request, Topic $topic)
@@ -71,7 +80,7 @@ class TopicsController extends Controller
 		$this->authorize('update', $topic);
 		$topic->update($request->all());
 
-		return redirect()->route('topics.show', $topic->id)->with('success', '更新成功。');
+		return redirect()->to($topic->link())->with('success', '更新成功。');
 	}
 
 	public function destroy(Topic $topic)
@@ -79,7 +88,7 @@ class TopicsController extends Controller
 		$this->authorize('destroy', $topic);
 		$topic->delete();
 
-		return redirect()->route('topics.index')->with('success', '删除成功。');
+		return redirect()->route('topics.index')->with('message', '删除成功。');
 	}
 
 	/*上传图片*/

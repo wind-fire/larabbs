@@ -47,7 +47,11 @@ Route::patch('/users/{user}', 'UsersController@update')->name('users.update');
 可以看到使用 resource 方法不仅节省很多代码，且严格遵循了 RESTful URI 的规范，在后续的开发中，我们会优先选择 resource 路由。*/
 
 
-Route::resource('topics', 'TopicsController', ['only' => ['index', 'show', 'create', 'store', 'update', 'edit', 'destroy']]);
+//Route::resource('topics', 'TopicsController', ['only' => ['index', 'show', 'create', 'store', 'update', 'edit', 'destroy']]);
+Route::resource('topics', 'TopicsController', ['only' => ['index', 'create', 'store', 'update', 'edit', 'destroy']]);
+Route::get('topics/{topic}/{slug?}', 'TopicsController@show')->name('topics.show');
+
+
 
 Route::resource('categories','CategoriesController',['only'=> ['show']]);
 
