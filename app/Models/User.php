@@ -75,6 +75,7 @@ class User extends Authenticatable
     /*后台重置密码时，对密码进行加密*/
     public function setPasswordAttribute($value)
     {
+
         // 如果值的长度等于 60，即认为是已经做过加密的情况
         if (strlen($value) != 60) {
 
