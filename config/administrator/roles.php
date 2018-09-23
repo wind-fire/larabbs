@@ -15,8 +15,8 @@ return [
 
     'permission'=> function()
     {
-        return true;
-//        return Auth::user()->can('manage_users');
+//        return true;
+        return Auth::user()->can('manage_users');
     },
 
     'columns' => [
