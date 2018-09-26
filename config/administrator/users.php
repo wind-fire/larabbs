@@ -16,7 +16,6 @@ return [
     // 返回 True 即通过权限验证，False 则无权访问并从 Menu 中隐藏
     'permission'=> function()
     {
-//        return true;
         return Auth::user()->can('manage_users');
     },
 
